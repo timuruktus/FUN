@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FUN</string>
+    <string name="start">Start</string>
+    <string name="cancel">Cancel</string>
+    <string name="digit_keyboard_font">fonts/Ghostlight-Light.ttf</string>
+    <string name="choose_your_city">Пожалуйста, выберите ваш город: </string>
+    <string name="error">Ошибка!</string>
+    <string name="errorNetMessage">Оишбка соединения с сетью</string>
+    <string name="OK">OK</string>
+</resources>
