@@ -3,6 +3,7 @@ package ru.timuruktus.fun.network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,13 +36,11 @@ public class ServerActions implements NetworkConnection {
     public void initServerConnection(){
         try {
             fromServer = new Socket(TEXT_DB_ADDRESS, TEXT_DB_PORT);
+            Log.d("mylog", "1");
             input = new BufferedReader(new InputStreamReader(fromServer.getInputStream()));
             out = new PrintWriter(fromServer.getOutputStream(), true);
         }catch(IOException ex){
-            activity.showDialog(context.getString(R.string.error),
-                    context.getString(R.string.errorNetMessage),
-                    context.getString(R.string.OK),
-                    AbstractActivity.STOP, false);
+            ex.printStackTrace();
         }
     }
 
@@ -85,7 +84,7 @@ public class ServerActions implements NetworkConnection {
         protected String doInBackground(Void... s) {
             initServerConnection();
             try {
-                out.print(LOAD_CITIES + " v" + CitiesCache.getRecentVersion());
+                out.print(LOAD_CITIES + " " + CitiesCache.getRecentVersion());
                 while (true) {
                     if (input.readLine() != null) {
                         if(input.readLine() == "RECENT"){

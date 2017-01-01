@@ -1,21 +1,29 @@
 package ru.timuruktus.fun.LocalData;
 
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import ru.timuruktus.fun.Activities.CityChooseActivity;
 import ru.timuruktus.fun.network.ServerActions;
 
-public class CitiesCache extends AbstractCache {
 
+
+public class CitiesCache extends Activity{
+
+
+    public final String LOG_TAG = "myLogs";
     private static int DBVersion = 100;
     private static final String DB_NAME = "citiesDB";
     private static final String TABLE_NAME = "cities";
@@ -26,11 +34,16 @@ public class CitiesCache extends AbstractCache {
     public String cities = null;
     Message msg;
 
-
-    public CitiesCache() {
-        dbHelper = new DBHelper(this,DB_NAME);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Context context = this.getApplicationContext();
+        dbHelper = new DBHelper(context);
         cv = new ContentValues();
         db = dbHelper.getWritableDatabase();
+    }
+
+    public CitiesCache() {
 
     }
 
@@ -54,12 +67,16 @@ public class CitiesCache extends AbstractCache {
      */
     class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper(Context context, String DBName) {
-            super(context, DBName, null, 1);
+        public DBHelper(Context context) {
+            super(context, DB_NAME, null, 1);
+            Log.d(LOG_TAG, context.toString());
+
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+
+            Log.d(LOG_TAG, "Creating a database");
             db.execSQL("create table " + TABLE_NAME + " ("
                     + "id integer primary key autoincrement,"
                     + "city text);");
@@ -74,6 +91,7 @@ public class CitiesCache extends AbstractCache {
     /**
      * PRIVATE
      * Return a array of available cities
+     * from LOCAL DataBase
      * @return
      */
     private String[] getCitiesFromDB(){
@@ -93,6 +111,9 @@ public class CitiesCache extends AbstractCache {
     /**
      * Uses for loading a list of cities
      * from outside's package
+     * IF app has recent version
+     * returns String[] from app DB
+     * else ask for DB from sever
      */
     public void loadCities(){
 
@@ -118,6 +139,11 @@ public class CitiesCache extends AbstractCache {
      * @param citiesList
      */
     private void sendCities(String[] citiesList){
+        Arrays.sort(citiesList, new Comparator<String>() {
+                    public int compare(String o1, String o2) {
+                        return o1.toString().compareTo(o2.toString());
+                    }
+                });
         msg = CityChooseActivity.h.obtainMessage(CityChooseActivity.READY, 0,
                 0, citiesList);
         CityChooseActivity.h.sendMessage(msg);
@@ -125,7 +151,11 @@ public class CitiesCache extends AbstractCache {
 
     /**
      * PRIVATE
-     * Uses to upgrade database
+     * Changes DBVersion to recent
+     * Than cleaning DB
+     * Than Creating new DB with recent @param cities
+     * THE FIRST ELEMENT OF String[] citiesList IS
+     * A NEW NUMBER OF DBVERSION!!!
      * @param cities
      */
     private void upgradeDB(String cities){

@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import ru.timuruktus.fun.LocalData.CitiesCache;
 import ru.timuruktus.fun.R;
 
 
@@ -45,6 +46,7 @@ public class CityChooseActivity extends AbstractActivity implements SurfaceHolde
         sh = videoView.getHolder();
         startBackgroundVideo();
         loadInterface();
+        ActivityManager.recentActivity = 0;
 
         h = new Handler() {
             @Override
@@ -55,14 +57,15 @@ public class CityChooseActivity extends AbstractActivity implements SurfaceHolde
                 else if (msg.what == READY){
                     loading.setVisibility(View.INVISIBLE);
                     listView = (ListView) findViewById(R.id.listView);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(new CityChooseActivity(),
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(new CityChooseActivity(),
                             R.layout.city_listview, (String[]) msg.obj);
                     listView.setAdapter(adapter);
                 }
             }
         };
 
-
+        CitiesCache cc = new CitiesCache();
+        cc.loadCities();
     }
 
 

@@ -16,7 +16,7 @@ public class ActivityManager extends Activity{
     public final static int ACTIVITY_TWO = 2;
     Context context;
     public final String LOG_TAG = "myLogs";
-
+    public static int recentActivity = 0;
     SharedPreferences sPref;
     SharedPreferences.Editor sEditor;
 
