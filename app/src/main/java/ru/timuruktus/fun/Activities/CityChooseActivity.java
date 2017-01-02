@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,12 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import ru.timuruktus.fun.LocalData.CitiesCache;
 import ru.timuruktus.fun.R;
+import ru.timuruktus.fun.network.TextServer;
 
 
-
-public class CityChooseActivity extends AbstractActivity implements SurfaceHolder.Callback, View.OnClickListener {
+public class CityChooseActivity extends AbstractActivity implements SurfaceHolder.Callback {
 
     final String LOG_TAG = "myLogs";
     SurfaceView videoView;
@@ -46,7 +46,6 @@ public class CityChooseActivity extends AbstractActivity implements SurfaceHolde
         sh = videoView.getHolder();
         startBackgroundVideo();
         loadInterface();
-        ActivityManager.recentActivity = 0;
 
         h = new Handler() {
             @Override
@@ -57,15 +56,17 @@ public class CityChooseActivity extends AbstractActivity implements SurfaceHolde
                 else if (msg.what == READY){
                     loading.setVisibility(View.INVISIBLE);
                     listView = (ListView) findViewById(R.id.listView);
+                    if(msg.obj == null) Log.d(LOG_TAG, "Object is null");
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(new CityChooseActivity(),
                             R.layout.city_listview, (String[]) msg.obj);
                     listView.setAdapter(adapter);
                 }
             }
         };
+        TextServer textServer = new TextServer(this);
+        textServer.loadCities();
 
-        CitiesCache cc = new CitiesCache();
-        cc.loadCities();
+
     }
 
 
@@ -85,11 +86,6 @@ public class CityChooseActivity extends AbstractActivity implements SurfaceHolde
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-    }
-
-
-    @Override
-    public void onClick(View v) {
     }
 
     public void startBackgroundVideo(){
