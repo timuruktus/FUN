@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel" translatable="false">Cancel</string>
+    <string name="choose_your_city">Please, choose your city</string>
+    <string name="digit_keyboard_font"></string>
+    <string name="error">Error!</string>
+    <string name="errorNetMessage">Network Error!</string>
+    <string name="start">Start</string>
+    <string name="OK"></string>
+</resources>

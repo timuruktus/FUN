@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Message;
 import android.util.Log;
 
 
@@ -15,10 +16,11 @@ public class ActivityManager extends Activity{
     public final static int ACTIVITY_ONE = 1;
     public final static int ACTIVITY_TWO = 2;
     Context context;
-    public final String LOG_TAG = "myLogs";
-
+    private final String LOG_TAG = "myLogs";
+    private static int recentActivity = 0;
     SharedPreferences sPref;
     SharedPreferences.Editor sEditor;
+
 
     /**
      * Creates a SharedPreferences class
@@ -57,12 +59,53 @@ public class ActivityManager extends Activity{
      */
     public void changeActivity(int activity){
         Intent intent = new Intent(context, CityChooseActivity.class);
+        recentActivity = 0;
         if(activity == ACTIVITY_ONE){
+            recentActivity = ACTIVITY_ONE;
             intent = new Intent(context, PlaceChooseActivity.class);
         } else if(activity == ACTIVITY_TWO){
+            recentActivity = ACTIVITY_TWO;
             intent = new Intent(context, PlaceActivity.class);
         }
         context.startActivity(intent);
+    }
+
+    public static int getRecentActivity(){
+        return recentActivity;
+    }
+
+    public static void sendMessageToRecentActivity(Message msg){
+        switch (getRecentActivity()){
+            case 0:{
+                CityChooseActivity.h.sendMessage(msg);
+                break;
+            }
+            case 1:{
+                PlaceChooseActivity.h.sendMessage(msg);
+                break;
+            }
+            case 2:{
+                PlaceActivity.h.sendMessage(msg);
+                break;
+            }
+        }
+    }
+
+    public static void sendMessageToRecentActivity(int msg){
+        switch (getRecentActivity()){
+            case 0:{
+                CityChooseActivity.h.sendEmptyMessage(msg);
+                break;
+            }
+            case 1:{
+                PlaceChooseActivity.h.sendEmptyMessage(msg);
+                break;
+            }
+            case 2:{
+                PlaceActivity.h.sendEmptyMessage(msg);
+                break;
+            }
+        }
     }
 
 

@@ -9,7 +9,7 @@ abstract public class AbstractActivity extends Activity {
     public static final int CONTINUE = 200;
     public static final int WAITING = 0;
     public static final int READY = 1;
-    public static final int SWITCH_ACTIVITY = 2;
+    public static final int NETWORK_ERROR = 3;
 
     /**
      * Needs to show dialogs in any activities
